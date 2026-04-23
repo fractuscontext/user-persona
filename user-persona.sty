@@ -1,0 +1,145 @@
+% SPDX-FileCopyrightText: 2026 Claire Tam <claire.tam@student.adelaide.edu.au>
+% SPDX-FileCopyrightText: 2026 fractuscontext <106440141+fractuscontext@users.noreply.github.com>
+%
+% SPDX-License-Identifier: LPPL-1.3c
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{user-persona}[2026/04/20 v1.0.0 Interactive Persona Package]
+
+\RequirePackage{graphicx}
+\RequirePackage[many]{tcolorbox}
+\RequirePackage{xcolor}
+\RequirePackage{etoolbox}
+\RequirePackage{enumitem}
+\RequirePackage{tabularx}
+\RequirePackage{fontawesome5}
+\pdfmapfile{}
+
+\definecolor{PersonaDark}{HTML}{354254}       % Main header background
+\definecolor{PersonaQuoteBg}{HTML}{FFF8DF}     % Quote background (light yellow)
+\definecolor{PersonaQuoteBorder}{HTML}{F6B762} % Quote border (orange)
+\definecolor{PersonaGreen}{HTML}{5CA662}       % Goals / Core Needs
+\definecolor{PersonaBlue}{HTML}{5D86D6}        % Behaviours
+\definecolor{PersonaRed}{HTML}{E26556}         % Pain Points
+\definecolor{PersonaGrey}{HTML}{8E94A0}        % Context outline
+
+% --- Box Styles ---
+\tcbset{
+  personasectionbox/.style={
+    colback=white, 
+    boxrule=1pt, 
+    arc=1.5mm,
+    left=3mm, right=3mm, top=1mm, bottom=2mm,
+    fonttitle=\bfseries\sffamily\footnotesize, 
+    colbacktitle=white,
+    titlerule=0pt,
+    bottomtitle=0mm, toptitle=2.5mm,
+    boxsep=0pt,
+    before skip=2mm, after skip=1mm
+  }
+}
+
+\makeatletter
+
+\newenvironment{persona}[1]{%
+  \def\@personaname{#1}%
+  \def\@personaphoto{}%
+  \def\@personaquote{}%
+  \def\@personafacts{}%
+  \def\@personaleftcards{}%
+  \def\@personarightcards{}%
+  \def\@personaspancards{}%
+}{%
+  \noindent
+  \begin{tcolorbox}[colback=PersonaDark, coltext=white, sharp corners, boxrule=0pt, fontupper=\bfseries\large\sffamily, left=2mm, top=2.5mm, bottom=2.5mm, before skip=0pt, after skip=3mm]
+    USER PERSONA: \MakeUppercase{\@personaname} % chktex 13
+  \end{tcolorbox}
+  
+  \noindent
+  \begin{minipage}[t]{0.35\textwidth}
+    \vspace{0pt}
+    \ifx\@personaphoto\@empty\else
+      \IfFileExists{\@personaphoto}{%
+        \includegraphics[width=\linewidth]{\@personaphoto}%
+      }{%
+        \begin{tcolorbox}[width=\linewidth, height=\linewidth, colback=gray!15, colframe=gray!40, halign=center, valign=center, arc=0mm, boxrule=1pt]
+          \sffamily\scriptsize\color{gray!70} Image not found:\\ \texttt{\@personaphoto}
+        \end{tcolorbox}%
+      }%
+    \fi
+    
+    \vspace{3mm}\par
+    
+    \begingroup
+    \renewcommand{\arraystretch}{1.4}%
+    \sffamily\scriptsize
+    \begin{tabularx}{\linewidth}{@{} l >{\raggedright\arraybackslash}X @{}}
+      \@personafacts%
+    \end{tabularx}
+    \endgroup
+    
+    \@personaleftcards%
+    
+  \end{minipage}%
+  \hfill
+  \begin{minipage}[t]{0.61\textwidth}
+    \vspace{0pt}
+    
+    \ifx\@personaquote\@empty\else
+      \begin{tcolorbox}[colback=PersonaQuoteBg, colframe=PersonaQuoteBorder, boxrule=0.8pt, arc=1.5mm, left=3.5mm, right=3.5mm, top=2.5mm, bottom=2.5mm, before skip=0pt, after skip=2.5mm]
+        \sffamily\itshape\footnotesize \@personaquote%
+      \end{tcolorbox}
+    \fi
+    
+    \@personarightcards%
+  \end{minipage}
+  
+  \par
+  \@personaspancards%
+  \par\vspace{5mm}
+}
+
+\newcommand{\personaphoto}[1]{\def\@personaphoto{#1}}
+\newcommand{\personaquote}[1]{\def\@personaquote{#1}}
+\newcommand{\personafact}[2]{\appto\@personafacts{\textbf{#1:} & #2 \\}}
+
+\newcommand{\personasection}[4][right]{%
+  \csappto{@persona#1cards}{%
+    \begin{tcolorbox}[personasectionbox, colframe=#3, coltitle=#3, title={\MakeUppercase{#2}}]
+      \begin{itemize}[leftmargin=3.5mm, nosep, itemsep=3pt, label={\tiny$\bullet$}]
+        \scriptsize\sffamily #4
+      \end{itemize}
+    \end{tcolorbox}%
+  }%
+}
+
+\newcommand{\personacard}[4][right]{%
+  \csappto{@persona#1cards}{%
+    \begin{tcolorbox}[personasectionbox, colframe=#3, coltitle=#3, title={\MakeUppercase{#2}}]
+      \scriptsize\sffamily #4
+    \end{tcolorbox}%
+  }%
+}
+
+\newcommand{\personacontext}[3][left]{\personacard[#1]{#2}{PersonaGrey}{#3}}
+
+\newcommand{\personapill}[1]{%
+  \tcbox[on line, tcbox raise base, colback=gray!15, colframe=gray!15, arc=2mm, boxrule=0pt, left=2mm, right=2mm, top=1mm, bottom=1mm, boxsep=0pt]{\sffamily\scriptsize #1}\enskip%
+}
+
+\newcommand{\personabrand}[2][img]{%
+  \tcbox[on line, tcbox raise base, colback=white, colframe=gray!30, arc=1mm, boxrule=0.5pt, left=1.5mm, right=1.5mm, top=1mm, bottom=1mm, boxsep=0pt]{%
+    \ifstrequal{#1}{img}{%
+      \IfFileExists{#2}{%
+        \raisebox{-0.2\height}{\includegraphics[height=3.5mm, keepaspectratio]{#2}}%
+      }{%
+        \sffamily\tiny Missing%
+      }%
+    }{%
+      \sffamily\raisebox{-0.1\height}{#2}%
+    }%
+  }\enskip%
+}
+
+\makeatother
+\endinput

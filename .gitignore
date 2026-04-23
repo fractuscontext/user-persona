@@ -1,0 +1,13 @@
+node_modules/
+build/
+dist/
+coverage/
+.DS_Store
+*.log
+.env*
+!.env.example
+!.envrc
+*.pdf
+.direnv
+*.tar.gz
+*.zip

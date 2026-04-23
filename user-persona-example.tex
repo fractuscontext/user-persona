@@ -1,0 +1,72 @@
+% SPDX-FileCopyrightText: 2026 Claire Tam <claire.tam@student.adelaide.edu.au>
+% SPDX-FileCopyrightText: 2026 fractuscontext <106440141+fractuscontext@users.noreply.github.com>
+%
+% SPDX-License-Identifier: LPPL-1.3c
+
+\documentclass[a4paper,11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{ifxetex,ifluatex}
+\usepackage{etoolbox}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+
+\usepackage{user-persona}
+
+\begin{document}
+
+\begin{persona}{Zhang Wei}
+  % Photo placeholder
+  \personaphoto{zhang-placeholder.jpg} 
+
+  \personaquote{``I sit in the control booth for 10 hours. If a robot crashes, 
+    I reboot it and send a WeChat voice note to the handyman. The rest of 
+    the time, I just swipe Douyin until my eyes blur.''} % chktex 38
+
+  \personafact{Age}{30}
+  \personafact{Gender}{Male}
+  \personafact{Location}{Chengdu, Mainland China}
+  \personafact{Education}{Technical School Diploma}
+  \personafact{Job}{Deputy Mgr, E-commerce Warehouse}
+  \personafact{Language}{Mandarin (Native), English (A2)}
+
+  \personasection{Goals \& Motivations}{PersonaGreen}{
+    \item Get through the 10-hour warehouse shift with zero major autonomous system failures.
+    \item Find entertaining short-form content to combat the extreme boredom of a highly automated workplace.
+    \item Navigate English-based software interfaces quickly without needing to translate dense blocks of text.
+  }
+
+  \personasection{Behaviours}{PersonaBlue}{
+    \item Chronic doomscroller: Swipes through Douyin and WeChat Channels for 6+ hours per shift.
+    \item Uses WeChat voice notes almost exclusively, as typing is too much effort while monitoring screens.
+    \item Relies heavily on visual UI cues (icons, colours) rather than reading text due to low English proficiency.
+  }
+
+  \personasection[right]{Pain Points}{PersonaRed}{
+    \item Physical strain from 10 hours of screen glare and warehouse machinery noise.
+    \item Exhaustion from a grueling 30\,km daily commute on the crowded metro system.
+    \item Frustration with complex, text-heavy Western software lacking intuitive visual mapping.
+  }
+
+  % Using helper commands
+  \personacard[right]{Tech Stack}{PersonaDark}{
+    \personapill{Android 14}
+    \personapill{Xiaomi UI}
+    \personabrand[fa]{\faWeixin}
+    \personabrand[fa]{\faTiktok}
+  }
+
+  \personacontext{Frequency}{Continuous, passive monitoring (8--10 hours daily)}
+  \personacontext{Motivation}{Killing time; avoiding ambient warehouse noise}
+  \personacontext{Setting}{Glass control booth in a loud warehouse; 1.5-hour metro commute each way}
+
+  \personasection[span]{Strategic Opportunities}{PersonaDark}{
+    \item Implement voice-to-text reporting tools to match user behaviour.
+    \item Use high-contrast visual indicators for system health status.
+    \item Gamify mandatory system checks to reduce boredom-induced errors.
+  }
+
+\end{persona}
+
+\end{document}

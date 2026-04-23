@@ -1,0 +1,54 @@
+# SPDX-FileCopyrightText: 2026 Claire Tam <claire.tam@student.adelaide.edu.au>
+# SPDX-FileCopyrightText: 2026 fractuscontext <106440141+fractuscontext@users.noreply.github.com>
+#
+# SPDX-License-Identifier: LPPL-1.3c
+
+name: Build CTAN Zip (Nix)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31.10.5
+        with:
+          extra_nix_config: |
+            access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build Package
+        run: nix develop --command build-ctan
+        
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: persona-ctan
+          path: user-persona.tar.gz
+
+      - name: Generate Date Tag
+        id: date
+        # Only run this on main pushes or manual dispatches, not PRs
+        if: github.event_name != 'pull_request'
+        # Creates a tag like "2026.04.23-1430" to avoid collisions on multiple daily pushes
+        run: echo "tag=$(date +'%Y.%m.%d-%H%M')" >> $GITHUB_OUTPUT
+
+      - name: Create GitHub Release
+        if: github.event_name != 'pull_request'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: "v${{ steps.date.outputs.tag }}"
+          name: "CTAN Build v${{ steps.date.outputs.tag }}"
+          files: user-persona.tar.gz
+          generate_release_notes: true

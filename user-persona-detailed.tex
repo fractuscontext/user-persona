@@ -1,0 +1,96 @@
+% SPDX-FileCopyrightText: 2026 Claire Tam <claire.tam@student.adelaide.edu.au>
+% SPDX-FileCopyrightText: 2026 fractuscontext <106440141+fractuscontext@users.noreply.github.com>
+%
+% SPDX-License-Identifier: LPPL-1.3c
+
+\documentclass[a4paper,11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{ifxetex,ifluatex}
+\usepackage{etoolbox}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+
+\usepackage{user-persona}
+
+\begin{document}
+
+\begin{persona}{Tyler Durden}
+  % Placeholder for photo
+  \personaphoto{tyler-placeholder.jpg} 
+  
+  \personaquote{``If the university portal crashes while I am on hold 
+    with Centrelink and trying to sort out Mum's NDIS plan, my entire 
+    week's schedule completely collapses.''} % chktex 38
+  
+  \personafact{Age}{26}
+  \personafact{Gender}{Non-binary (They/Them)}
+  \personafact{Location}{Melbourne, Australia}
+  \personafact{Education}{Part-time B.Sc (Honours), High Distinction}
+  \personafact{Status}{NDIS Participant, Centrelink, Carer}
+  \personafact{Work}{PT Retail \& Advocacy Spokesperson}
+  \personafact{Neurotype}{Autistic / ADHD}
+  \personafact{Energy}{Exhausted (Low/Fluctuating)}
+  
+  \personasection{Goals \& Motivations}{PersonaGreen}{
+    \item Maintain a High Distinction academic average despite extremely limited energy slots.
+    \item Successfully advocate for neurodivergent and carer communities at the university level.
+    \item Manage complex caregiving duties for their mother without sacrificing their Honours research.
+    \item Secure a PhD scholarship in Disability Studies to influence policy from within the system.
+  }
+  
+  \personasection{Behaviours}{PersonaBlue}{
+    \item Relies on strict, militant ``time-blocking'' to juggle uni, work, and caregiving.
+    \item Prefers asynchronous, text-based communication over unpredictable live phone calls due to sensory load.
+    \item Completes heavyweight academic drafting in hospital waiting rooms or during brief quiet periods at night.
+    \item Uses ``body doubling'' apps and focus timers to stay on task during brain-fog episodes.
+    \item Audits every new software tool for keyboard accessibility and dark-mode support before adoption.
+  }
+  
+  \personasection[right]{Pain Points}{PersonaRed}{
+    \item Bureaucratic red tape: Navigating rigid university extension policies vs.\ unpredictable NDIS/carer crises.
+    \item Cognitive fatigue from constantly having to self-advocate for basic accessibility accommodations.
+    \item Severe burnout when group-mates fail to respect highly structured, pre-planned meeting times.
+    \item Financial anxiety due to the unreliable nature of government support payments and medical costs.
+  }
+  
+  \personacard[right]{Tools \& Tech}{PersonaDark}{
+    \personapill{Notion}
+    \personapill{Google Calendar}
+    \personapill{Slack}
+    \personapill{Zotero}
+    \personapill{LiquidText}
+    \personabrand[fa]{\faApple}
+    \personabrand[fa]{\faAccessibleIcon}
+    \personabrand[fa]{\faCoffee}
+    \personabrand[fa]{\faBrain}
+  }
+
+  % Context cards on the left
+  \personacontext{Frequency}{Scheduled Bursts (highly dependent on daily capacity)}
+  \personacontext{Motivation}{Academic survival and pushing systemic change}
+  \personacontext{Setting}{Home office, hospital waiting rooms, or commuting on public transport}
+  
+  \personacard[left]{Life Events}{PersonaGrey}{
+    \textbf{2022:} Diagnosed with burnout.\\
+    \textbf{2023:} Became full-time carer.\\
+    \textbf{2024:} Started Honours project.
+  }
+
+  \personasection[span]{Core Values \& Advocacy}{PersonaGreen}{
+    % not everyone uses aussie spelling, but this is a persona for an Australian student so it makes sense to use it here
+    \item \textbf{Intersectionality:} Ensuring advocacy includes the most marginalised voices in the community.
+    \item \textbf{Transparency:} Pushing for open, clear, and honest communication from institutional portals.
+    \item \textbf{Autonomy:} Designing systems that empower users to manage their own needs without friction.
+  }
+
+  \personasection[span]{Accessibility Requirements}{PersonaGrey}{
+    \item High contrast text for reading in brightly lit hospital environments.
+    \item Logical heading structures for screen reader compatibility during high-fatigue periods.
+    \item Predictable interaction patterns to reduce cognitive load during multi-tasking.
+  }
+  
+\end{persona}
+
+\end{document}

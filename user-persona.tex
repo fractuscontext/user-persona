@@ -1,0 +1,317 @@
+% SPDX-FileCopyrightText: 2026 Claire Tam <claire.tam@student.adelaide.edu.au>
+% SPDX-FileCopyrightText: 2026 fractuscontext <106440141+fractuscontext@users.noreply.github.com>
+%
+% SPDX-License-Identifier: LPPL-1.3c
+
+\documentclass[a4paper,11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{user-persona}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{booktabs}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue,
+  urlcolor=blue,
+  citecolor=blue
+}
+
+\lstset{
+  language=[LaTeX]TeX,
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  frame=single,
+  backgroundcolor=\color{gray!5},
+  keywordstyle=\color{blue},
+  commentstyle=\color{gray},
+  stringstyle=\color{red}
+}
+
+\title{The \texttt{user-persona} Package\\
+  \large Structured User Persona Sheets for UX and HCI Documentation}
+\author{Claire Tam\\
+  \texttt{claire.tam@student.adelaide.edu.au}}
+\date{Version 1.0.0\\2026/04/24}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+The \texttt{user-persona} package provides a structured environment and command set for typesetting professional user persona sheets in \LaTeX{}. It is designed for User Experience (UX) researchers, Human-Computer Interaction (HCI) practitioners, and product designers who maintain documentation within a \LaTeX{} workflow. The package offers a flexible two-column layout with customizable content cards, semantic color coding, and inline labeling tools, all built on the \texttt{tcolorbox} framework.
+\end{abstract}
+
+\tableofcontents
+
+\section{Introduction}
+
+\subsection{What Is a User Persona?}
+
+A \textbf{user persona} is a fictitious but research-grounded representation of a target user group, synthesizing observed behaviors, goals, and frustrations into a named, humanized archetype \cite{cooper1999}. Personas serve as design artifacts that keep real user needs visible throughout the product development lifecycle-from initial requirements gathering through to final evaluation \cite{pruitt2006}.
+
+Unlike demographic segments or use cases, personas are narrative constructs that provide designers and stakeholders with a shared vocabulary anchored in empirical user research \cite{nielsen2019}. They answer questions like: \textit{Who is this for? What do they care about? What frustrates them?}
+
+
+\section{Quick Start}
+
+\begin{lstlisting}
+\documentclass{article}
+\usepackage{user-persona}
+
+\begin{document}
+
+\begin{persona}{Alex Chen}
+  \personaphoto{alex.jpg}
+  \personaquote{``I need tools that respect my time and my cognition.''}
+  
+  \personafact{Age}{28}
+  \personafact{Location}{Toronto, Canada}
+  \personafact{Role}{Senior Software Engineer}
+  
+  \personasection{Goals}{PersonaGreen}{
+    \item Ship features without burning out
+    \item Maintain work-life boundaries
+  }
+  
+  \personasection[right]{Pain Points}{PersonaRed}{
+    \item Meeting fatigue
+    \item Context-switching costs
+  }
+\end{persona}
+
+\end{document}
+\end{lstlisting}
+
+This produces a two-column persona sheet with a portrait, quote, identity table, and color-coded goal/pain point cards.
+
+\section{Command Reference}
+
+\subsection{The \texttt{persona} Environment}
+
+The main structural element:
+
+\begin{lstlisting}
+\begin{persona}{Name}
+  % commands go here
+\end{persona}
+\end{lstlisting}
+
+\textbf{Arguments:}
+\begin{itemize}
+\item \texttt{Name}: The persona's name (appears in the header)
+\end{itemize}
+
+\subsection{Identity Commands}
+
+\subsubsection{\texttt{\textbackslash personaphoto}}
+
+\begin{lstlisting}
+\personaphoto{path/to/image.jpg}
+\end{lstlisting}
+
+Sets the portrait image. If the file is not found, a placeholder box is rendered.
+
+\subsubsection{\texttt{\textbackslash personaquote}}
+
+\begin{lstlisting}
+\personaquote{``Quote text here.''}
+\end{lstlisting}
+
+Sets a highlighted pull-quote in a yellow box at the top of the right column.
+
+\subsubsection{\texttt{\textbackslash personafact}}
+
+\begin{lstlisting}
+\personafact{Key}{Value}
+\end{lstlisting}
+
+Adds a row to the identity table below the portrait.
+
+\textbf{Example:}
+\begin{lstlisting}
+\personafact{Age}{32}
+\personafact{Location}{Berlin, Germany}
+\personafact{Occupation}{UX Researcher}
+\end{lstlisting}
+
+\subsection{Content Card Commands}
+
+\subsubsection{\texttt{\textbackslash personasection}}
+
+\begin{lstlisting}
+\personasection[position]{Title}{Color}{Items}
+\end{lstlisting}
+
+Creates a titled card with a bulleted list.
+
+\textbf{Arguments:}
+\begin{itemize}
+\item \texttt{position} (optional): \texttt{left}, \texttt{right} (default), or \texttt{span}
+\item \texttt{Title}: Section heading (automatically uppercased)
+\item \texttt{Color}: Frame color (e.g., \texttt{PersonaGreen}, \texttt{PersonaRed})
+\item \texttt{Items}: \texttt{\textbackslash item} list content
+\end{itemize}
+
+\textbf{Example:}
+\begin{lstlisting}
+\personasection{Motivations}{PersonaBlue}{
+  \item Solve real user problems
+  \item Work with talented teams
+  \item Continuous learning
+}
+\end{lstlisting}
+
+\subsubsection{\texttt{\textbackslash personacard}}
+
+\begin{lstlisting}
+\personacard[position]{Title}{Color}{Content}
+\end{lstlisting}
+
+Creates a titled card with arbitrary content (not just lists).
+
+\textbf{Example:}
+\begin{lstlisting}
+\personacard[left]{Bio}{PersonaGrey}{
+  Joined the company in 2023 after completing
+  a PhD in Human-Computer Interaction.
+}
+\end{lstlisting}
+
+\subsubsection{\texttt{\textbackslash personacontext}}
+
+\begin{lstlisting}
+\personacontext[position]{Title}{Content}
+\end{lstlisting}
+
+Shorthand for \texttt{\textbackslash personacard} with \texttt{PersonaGrey} color (for contextual/supplementary information).
+
+\subsection{Inline Elements}
+
+\subsubsection{\texttt{\textbackslash personapill}}
+
+\begin{lstlisting}
+\personapill{Label Text}
+\end{lstlisting}
+
+Renders a rounded pill-shaped label (useful for tagging skills, tools, or attributes).
+
+\textbf{Example:}
+\begin{lstlisting}
+\personacard{Tools}{PersonaDark}{
+  \personapill{Figma}
+  \personapill{Notion}
+  \personapill{Miro}
+}
+\end{lstlisting}
+
+\subsubsection{\texttt{\textbackslash personabrand}}
+
+\begin{lstlisting}
+\personabrand[type]{content}
+\end{lstlisting}
+
+Renders an icon badge. Two modes:
+
+\begin{itemize}
+\item \texttt{[img]}: Display an image file
+\item \texttt{[fa]}: Display a FontAwesome icon
+\end{itemize}
+
+\textbf{Examples:}
+\begin{lstlisting}
+\personabrand[img]{logos/slack.png}
+\personabrand[fa]{\faApple}
+\personabrand[fa]{\faLinux}
+\end{lstlisting}
+
+\section{Color Scheme}
+
+The package defines five semantic colors:
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+\textbf{Color Name} & \textbf{Hex} & \textbf{Suggested Use} \\
+\midrule
+\texttt{PersonaDark} & \texttt{\#354254} & Header, dark cards \\
+\texttt{PersonaGreen} & \texttt{\#5CA662} & Goals, Core Needs \\
+\texttt{PersonaBlue} & \texttt{\#5D86D6} & Behaviors, Patterns \\
+\texttt{PersonaRed} & \texttt{\#E26556} & Pain Points, Frustrations \\
+\texttt{PersonaGrey} & \texttt{\#8E94A0} & Context, Supplementary Info \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+You can define custom colors using \texttt{xcolor}:
+
+\begin{lstlisting}
+\definecolor{MyPurple}{HTML}{7D88B3}
+\personasection{Custom Section}{MyPurple}{...}
+\end{lstlisting}
+
+\section{Layout and Positioning}
+
+The \texttt{persona} environment produces a two-column layout:
+
+\begin{itemize}
+\item \textbf{Left column (35\% width):} Portrait photo, identity table, and cards with \texttt{[left]} position
+\item \textbf{Right column (61\% width):} Pull-quote and cards with \texttt{[right]} position (default)
+\item \textbf{Span cards:} Full-width cards below both columns using \texttt{[span]} position
+\end{itemize}
+
+\textbf{Best practices:}
+\begin{itemize}
+\item Use \texttt{[left]} for contextual/biographical info
+\item Use \texttt{[right]} for primary behavioral/motivational content
+\item Use \texttt{[span]} for accessibility requirements or extended narratives
+\end{itemize}
+
+\section{Complete Example}
+
+See \texttt{user-persona-example.tex} (minimal) and \texttt{user-persona-detailed.tex} (comprehensive) in the package distribution for full working examples.
+
+\section{Troubleshooting}
+
+\subsection{Missing Portrait Image}
+
+If \texttt{\textbackslash personaphoto\{path\}} points to a nonexistent file, a gray placeholder box with an error message is rendered. Check your image path and ensure the file is in the correct location relative to your \texttt{.tex} file.
+
+\subsection{Font Warnings}
+
+If you see warnings about missing FontAwesome glyphs, ensure \texttt{fontawesome5} is installed:
+
+\begin{lstlisting}
+tlmgr install fontawesome5
+\end{lstlisting}
+
+\subsection{Color Not Defined}
+
+If you reference a color that doesn't exist, \LaTeX{} will throw an error. Either use one of the predefined colors (\texttt{PersonaDark}, \texttt{PersonaGreen}, etc.) or define your own with \texttt{\textbackslash definecolor}.
+
+
+
+\section{Acknowledgments}
+
+Thanks to the \texttt{tcolorbox} maintainers for providing the layout framework, and to the broader \LaTeX{} community for feedback during development.
+
+\begin{thebibliography}{9}
+
+\bibitem{cooper1999}
+A. Cooper, \textit{The Inmates Are Running the Asylum: Why High-Tech Products Drive Us Crazy and How to Restore the Sanity}. Sams Publishing, 1999.
+
+\bibitem{pruitt2006}
+J. Pruitt and T. Adlin, \textit{The Persona Lifecycle: Keeping People in Mind Throughout Product Design}. Morgan Kaufmann, 2006. ISBN: 978-0-12-566251-2.
+
+\bibitem{nielsen2019}
+L. Nielsen, \textit{Personas - User Focused Design}. Springer, 2019. \href{https://doi.org/10.1007/978-1-4471-7427-1}{doi:10.1007/978-1-4471-7427-1}
+
+\bibitem{holzinger2022}
+A. Holzinger, M. Kargl, B. Kipperer, P. Regitnig, M. Plass, and H. Müller, ``Personas for Artificial Intelligence (AI): an Open Source Toolbox,'' \textit{IEEE Access}, vol. 10, pp. 23732--23747, 2022. \href{https://doi.org/10.1109/ACCESS.2022.3154776}{doi:10.1109/ACCESS.2022.3154776}
+
+\end{thebibliography}
+
+\end{document}
