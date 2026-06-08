@@ -28,6 +28,17 @@ jobs:
           extra_nix_config: |
             access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
 
+      - name: Cache Nix Store
+        uses: DeterminateSystems/magic-nix-cache-action@main
+
+      - name: Cache Tectonic Packages
+        uses: actions/cache@v4
+        with:
+          path: .tectonic-cache
+          key: tectonic-${{ runner.os }}-${{ hashFiles('**/*.tex', '**/*.sty') }}
+          restore-keys: |
+            tectonic-${{ runner.os }}-
+
       - name: Build Package
         run: nix develop --command build-ctan
         
@@ -49,6 +60,6 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: "v${{ steps.date.outputs.tag }}"
-          name: "CTAN Build v${{ steps.date.outputs.tag }}"
+          name: "snapshot-${{ steps.date.outputs.tag }}"
           files: user-persona.tar.gz
           generate_release_notes: true

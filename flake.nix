@@ -8,10 +8,11 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs-revert.url = "github:nixos/nixpkgs/nixos-25.11";
   };
 
   outputs =
-    { self, nixpkgs }:
+    { self, nixpkgs, nixpkgs-revert }:
     let
       supportedSystems = [
         "x86_64-linux"
@@ -21,15 +22,18 @@
       ];
       forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
       nixpkgsFor = forAllSystems (system: import nixpkgs { inherit system; });
+      nixpkgsRevertFor = forAllSystems (system: import nixpkgs-revert { inherit system; });
     in
     {
       devShells = forAllSystems (
         system:
         let
           pkgs = nixpkgsFor.${system};
-          tex = pkgs.texlive.combine {
+          pkgs-revert = nixpkgsRevertFor.${system}; 
+          
+          tex-tools = pkgs.texlive.combine {
             inherit (pkgs.texlive)
-              scheme-basic
+              scheme-minimal
               ctanify
               chktex
               ;
@@ -61,14 +65,16 @@
           default = pkgs.mkShell {
             buildInputs = with pkgs; [
               reuse
-              tex
-              tectonic
+              pkgs-revert.tectonic 
               build-ctan
+              tex-tools
             ];
 
             shellHook = ''
               echo "--- Persona LaTeX Package Development environment ---"
               echo "Commands: build-ctan (reproducible build), tectonic, chktex, ctanify"
+              
+              export TECTONIC_CACHE_DIR="$PWD/.tectonic-cache"
             '';
           };
         }
