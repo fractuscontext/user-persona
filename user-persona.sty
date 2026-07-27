@@ -26,11 +26,11 @@
 % --- Box Styles ---
 \tcbset{
   personasectionbox/.style={
-    colback=white, 
-    boxrule=1pt, 
+    colback=white,
+    boxrule=1pt,
     arc=1.5mm,
     left=3mm, right=3mm, top=1mm, bottom=2mm,
-    fonttitle=\bfseries\sffamily\footnotesize, 
+    fonttitle=\bfseries\sffamily\footnotesize,
     colbacktitle=white,
     titlerule=0pt,
     bottomtitle=0mm, toptitle=2.5mm,
@@ -54,7 +54,7 @@
   \begin{tcolorbox}[colback=PersonaDark, coltext=white, sharp corners, boxrule=0pt, fontupper=\bfseries\large\sffamily, left=2mm, top=2.5mm, bottom=2.5mm, before skip=0pt, after skip=3mm]
     USER PERSONA: \MakeUppercase{\@personaname} % chktex 13
   \end{tcolorbox}
-  
+
   \noindent
   \begin{minipage}[t]{0.35\textwidth}
     \vspace{0pt}
@@ -67,9 +67,9 @@
         \end{tcolorbox}%
       }%
     \fi
-    
+
     \vspace{3mm}\par
-    
+
     \begingroup
     \renewcommand{\arraystretch}{1.4}%
     \sffamily\scriptsize
@@ -77,23 +77,23 @@
       \@personafacts%
     \end{tabularx}
     \endgroup
-    
+
     \@personaleftcards%
-    
+
   \end{minipage}%
   \hfill
   \begin{minipage}[t]{0.61\textwidth}
     \vspace{0pt}
-    
+
     \ifx\@personaquote\@empty\else
       \begin{tcolorbox}[colback=PersonaQuoteBg, colframe=PersonaQuoteBorder, boxrule=0.8pt, arc=1.5mm, left=3.5mm, right=3.5mm, top=2.5mm, bottom=2.5mm, before skip=0pt, after skip=2.5mm]
         \sffamily\itshape\footnotesize \@personaquote%
       \end{tcolorbox}
     \fi
-    
+
     \@personarightcards%
   \end{minipage}
-  
+
   \par
   \@personaspancards%
   \par\vspace{5mm}

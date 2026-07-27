@@ -11,3 +11,4 @@ coverage/
 .direnv
 *.tar.gz
 *.zip
+.tectonic-cache/

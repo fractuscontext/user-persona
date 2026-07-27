@@ -6,12 +6,13 @@
 {
   description = "Persona LaTeX Package Development Environment";
 
-  inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-  };
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/ceb816893b42a61706e28279f75867855d04eaae";
 
   outputs =
-    { self, nixpkgs }:
+    {
+      self,
+      nixpkgs,
+    }:
     let
       supportedSystems = [
         "x86_64-linux"
@@ -27,16 +28,62 @@
         system:
         let
           pkgs = nixpkgsFor.${system};
-          tex = pkgs.texlive.combine {
-            inherit (pkgs.texlive)
-              scheme-basic
+
+          tex-tools = pkgs.texliveMinimal.withPackages (
+            ps: with ps; [
               ctanify
               chktex
-              ;
-          };
+            ]
+          );
+
+          base36 = pkgs.writeScriptBin "base36" ''
+            #!/usr/bin/env bash
+            set -e
+            num=$1
+            chars="0123456789abcdefghijklmnopqrstuvwxyz"
+            res=""
+            while [ $num -gt 0 ]; do
+              res="''${chars:$(($num % 36)):1}$res"
+              num=$(($num / 36))
+            done
+            echo "''${res:-0}"
+          '';
+
+          # New standalone version generator
+          get-version = pkgs.writeScriptBin "get-version" ''
+            #!/usr/bin/env bash
+            set -e
+            START_TIME=1767187800
+            CURRENT_TIME=$(date -u +%s)
+
+            if [ "$CURRENT_TIME" -le "$START_TIME" ]; then
+                CURRENT_TIME=$(($START_TIME + 1))
+            fi
+
+            DELTA=$((CURRENT_TIME - START_TIME))
+            BASE36_RAW=$(base36 $DELTA)
+
+            # Print the formatted version
+            echo "v$(printf "%06s" "$BASE36_RAW" | tr ' ' '0')"
+          '';
 
           build-ctan = pkgs.writeScriptBin "build-ctan" ''
             set -e
+
+            # Accept version from arguments, or calculate it if none provided
+            VERSION_STR=$1
+            if [ -z "$VERSION_STR" ]; then
+              VERSION_STR=$(get-version)
+            fi
+
+            DATE_SLASH=$(date -u +'%Y/%m/%d')
+            DATE_DASH=$(date -u +'%Y-%m-%d')
+
+            echo "Injecting version: $VERSION_STR ($DATE_DASH)"
+
+            sed -i -E "s|(\\\\ProvidesPackage\{user-persona\}\[)[^ ]+ v[^ ]+|\1$DATE_SLASH $VERSION_STR|" user-persona.sty
+            sed -i -E "s|\\\\date\{.+\}|\\\\date\{$VERSION_STR\\\\\\\\$DATE_DASH\}|" user-persona.tex
+
             echo "Building Documentation with Tectonic..."
             tectonic user-persona.tex
             tectonic user-persona-example.tex
@@ -47,6 +94,7 @@
 
             echo "Creating CTAN bundle..."
             ctanify --no-tds \
+                    user-persona-example-screenshot.jpeg \
                     user-persona.sty \
                     user-persona.tex \
                     user-persona.pdf \
@@ -61,14 +109,17 @@
           default = pkgs.mkShell {
             buildInputs = with pkgs; [
               reuse
-              tex
-              tectonic
+              tectonic-unwrapped
+              base36
+              get-version
               build-ctan
+              tex-tools
             ];
 
             shellHook = ''
-              echo "--- Persona LaTeX Package Development environment ---"
-              echo "Commands: build-ctan (reproducible build), tectonic, chktex, ctanify"
+              echo "--- Persona LaTeX Package Development environment ---" >&2
+              echo "Commands: build-ctan [version], get-version, base36, tectonic, chktex, ctanify" >&2
+              export TECTONIC_CACHE_DIR="$PWD/.tectonic-cache"
             '';
           };
         }

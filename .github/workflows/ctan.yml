@@ -7,10 +7,14 @@ name: Build CTAN Zip (Nix)
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
   workflow_dispatch:
+    inputs:
+      create-release:
+        type: boolean
+        description: Publish on GitHub Release
 
 permissions:
   contents: write
@@ -19,36 +23,36 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v6
+      - uses: cachix/install-nix-action@v31.10.5
+      - uses: Mic92/hestia@v3
 
-      - name: Install Nix
-        uses: cachix/install-nix-action@v31.10.5
-        with:
-          extra_nix_config: |
-            access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
+      - name: Preheat Nix env
+        run: nix develop --command true
+
+      - name: Generate Version Tag
+        id: version
+        run: |
+          VERSION_STR=$(nix develop --command get-version)
+          echo "tag=$VERSION_STR" >> $GITHUB_OUTPUT
 
       - name: Build Package
-        run: nix develop --command build-ctan
-        
+        run: nix develop --command build-ctan ${{ steps.version.outputs.tag }}
+
+      - name: Rename Package
+        run: mv user-persona.tar.gz user-persona-${{ steps.version.outputs.tag }}.tar.gz
+
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: persona-ctan
-          path: user-persona.tar.gz
-
-      - name: Generate Date Tag
-        id: date
-        # Only run this on main pushes or manual dispatches, not PRs
-        if: github.event_name != 'pull_request'
-        # Creates a tag like "2026.04.23-1430" to avoid collisions on multiple daily pushes
-        run: echo "tag=$(date +'%Y.%m.%d-%H%M')" >> $GITHUB_OUTPUT
+          path: user-persona-${{ steps.version.outputs.tag }}.tar.gz
+          compression-level: 0
 
       - name: Create GitHub Release
-        if: github.event_name != 'pull_request'
+        if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.create-release == true)
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: "v${{ steps.date.outputs.tag }}"
-          name: "CTAN Build v${{ steps.date.outputs.tag }}"
-          files: user-persona.tar.gz
+          tag_name: "${{ steps.version.outputs.tag }}"
+          name: "Release ${{ steps.version.outputs.tag }}"
+          files: user-persona-${{ steps.version.outputs.tag }}.tar.gz
           generate_release_notes: true
