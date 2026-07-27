@@ -7,7 +7,7 @@ SPDX-License-Identifier: LPPL-1.3c
 
 # user-persona: LaTeX Package for UX & HCI
 
-![Screenshot](./user-persona-example.jpeg)
+![Screenshot](./user-persona-example-screenshot.jpeg)
 
 LaTeX Package for creating user personas.
 
