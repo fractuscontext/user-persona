@@ -1,7 +1,16 @@
 version = 1
 
 [[annotations]]
-path = ["*.lock", ".gitignore", ".envrc"]
+path = ["*.lock", ".gitignore", ".envrc", ".vscode/**", ".github/dependabot.yml"]
 precedence = "aggregate"
 SPDX-FileCopyrightText = "No one"
 SPDX-License-Identifier = "CC0-1.0"
+
+[[annotations]]
+path = ["user-persona-example-screenshot.jpeg"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = [
+  "2026 Claire Tam <claire.tam@student.adelaide.edu.au>",
+  "2026 fractuscontext <106440141+fractuscontext@users.noreply.github.com>",
+]
+SPDX-License-Identifier = "LPPL-1.3c"

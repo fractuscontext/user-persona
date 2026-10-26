@@ -11,4 +11,10 @@ coverage/
 .direnv
 *.tar.gz
 *.zip
-.tectonic-cache/
+*.aux
+*.fls
+*.fdb_latexmk
+*.out
+*.toc
+*.synctex.gz
+.texmf-var/

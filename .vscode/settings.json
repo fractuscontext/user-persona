@@ -1,0 +1,36 @@
+{
+  // Disable automatic building on save or typing if preferred, or leave on change
+  "latex-workshop.latex.autoBuild.run": "onFileChange",
+
+  // Define the LuaLaTeX tool (via latexmk, so reruns for the TOC happen automatically)
+  "latex-workshop.latex.tools": [
+    {
+      "name": "latexmk-lualatex",
+      "command": "latexmk",
+      "args": [
+        "-lualatex",
+        "-synctex=1",
+        "-interaction=nonstopmode",
+        "-file-line-error",
+        "%DOC%"
+      ],
+      "env": {}
+    }
+  ],
+
+  // Set LuaLaTeX as the default and only recipe
+  "latex-workshop.latex.recipes": [
+    {
+      "name": "lualatex",
+      "tools": [
+        "latexmk-lualatex"
+      ]
+    }
+  ],
+
+  // Open the PDF side-by-side inside VS Code (like Overleaf)
+  "latex-workshop.view.pdf.viewer": "tab",
+
+  // Enable SyncTeX between editor and preview
+  "latex-workshop.synctex.afterBuild.enabled": true
+}

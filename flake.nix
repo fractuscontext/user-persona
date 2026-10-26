@@ -6,7 +6,7 @@
 {
   description = "Persona LaTeX Package Development Environment";
 
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/ceb816893b42a61706e28279f75867855d04eaae";
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-26.05-darwin";
 
   outputs =
     {
@@ -29,10 +29,23 @@
         let
           pkgs = nixpkgsFor.${system};
 
-          tex-tools = pkgs.texliveMinimal.withPackages (
+          tex-tools = pkgs.texliveSmall.withPackages (
             ps: with ps; [
+              latexmk
               ctanify
               chktex
+              # user-persona.sty dependencies
+              tcolorbox
+              pgf
+              pgfopts
+              fontawesome5
+              enumitem
+              environ
+              tikzfill
+              pdfcol
+              # examples
+              helvetic
+              mwe
             ]
           );
 
@@ -84,10 +97,11 @@
             sed -i -E "s|(\\\\ProvidesPackage\{user-persona\}\[)[^ ]+ v[^ ]+|\1$DATE_SLASH $VERSION_STR|" user-persona.sty
             sed -i -E "s|\\\\date\{.+\}|\\\\date\{$VERSION_STR\\\\\\\\$DATE_DASH\}|" user-persona.tex
 
-            echo "Building Documentation with Tectonic..."
-            tectonic user-persona.tex
-            tectonic user-persona-example.tex
-            tectonic user-persona-detailed.tex
+            echo "Building Documentation with LuaLaTeX..."
+            for doc in user-persona user-persona-example user-persona-detailed; do
+              latexmk -lualatex -interaction=nonstopmode -halt-on-error "$doc.tex"
+            done
+            latexmk -c
 
             echo "Linting..."
             chktex user-persona.sty
@@ -109,7 +123,6 @@
           default = pkgs.mkShell {
             buildInputs = with pkgs; [
               reuse
-              tectonic-unwrapped
               base36
               get-version
               build-ctan
@@ -118,8 +131,9 @@
 
             shellHook = ''
               echo "--- Persona LaTeX Package Development environment ---" >&2
-              echo "Commands: build-ctan [version], get-version, base36, tectonic, chktex, ctanify" >&2
-              export TECTONIC_CACHE_DIR="$PWD/.tectonic-cache"
+              echo "Commands: build-ctan [version], get-version, base36, lualatex, latexmk, chktex, ctanify" >&2
+              # Keep the luaotfload font cache per project, so it never goes stale against this TeX set
+              export TEXMFVAR="$PWD/.texmf-var"
             '';
           };
         }
