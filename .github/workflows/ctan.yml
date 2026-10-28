@@ -30,22 +30,23 @@ jobs:
       - name: Preheat Nix env
         run: nix develop --command true
 
-      - name: Generate Version Tag
+      - name: Generate Version and Tag
         id: version
         run: |
-          VERSION_STR=$(nix develop --command get-version)
-          echo "tag=$VERSION_STR" >> $GITHUB_OUTPUT
+          NOW=$(date -u +%s)
+          echo "version=$(nix develop --command just version $NOW)" >> $GITHUB_OUTPUT
+          echo "tag=$(nix develop --command just tag $NOW)" >> $GITHUB_OUTPUT
 
       - name: Build Package
-        run: nix develop --command build-ctan ${{ steps.version.outputs.tag }}
+        run: nix develop --command just ctan ${{ steps.version.outputs.version }}
 
       - name: Rename Package
-        run: mv user-persona.tar.gz user-persona-${{ steps.version.outputs.tag }}.tar.gz
+        run: mv user-persona.tar.gz user-persona-${{ steps.version.outputs.version }}.tar.gz
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          path: user-persona-${{ steps.version.outputs.tag }}.tar.gz
+          path: user-persona-${{ steps.version.outputs.version }}.tar.gz
           compression-level: 0
 
       - name: Create GitHub Release
@@ -53,6 +54,6 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: "${{ steps.version.outputs.tag }}"
-          name: "Release ${{ steps.version.outputs.tag }}"
-          files: user-persona-${{ steps.version.outputs.tag }}.tar.gz
+          name: "Release ${{ steps.version.outputs.version }}"
+          files: user-persona-${{ steps.version.outputs.version }}.tar.gz
           generate_release_notes: true

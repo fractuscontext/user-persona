@@ -57,6 +57,8 @@ Please see the full documentation at `./user-persona.tex`.
 This repository is licened under LPPL-1.3c; and proudly uses [Nix](https://nixos.org/) for a fully reproducible
 environment.
 
-- **Enter shell:** `nix develop` (provides `lualatex`, `latexmk`, `chktex`, `ctanify`, `reuse`)
-- **Build CTAN bundle:** `build-ctan`
+- **Enter shell:** `nix develop` (provides `just`, `lualatex`, `latexmk`, `chktex`, `ctanify`, `reuse`)
+- **List tasks:** `just`
+- **Build PDFs only:** `just docs`
+- **Build CTAN bundle:** `just ctan [version]`
 - **Lint SPDX headers:** `reuse lint`
