@@ -3,94 +3,121 @@
 %
 % SPDX-License-Identifier: LPPL-1.3c
 
-\documentclass[a4paper,11pt]{article}
-\usepackage[margin=1in]{geometry}
-\usepackage{ifxetex,ifluatex}
-\usepackage{etoolbox}
-\usepackage[T1]{fontenc}
+\documentclass[10pt,a4paper]{article}
 \usepackage[utf8]{inputenc}
-\usepackage{helvet}
-\renewcommand{\familydefault}{\sfdefault}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\geometry{margin=1.5cm}
 
-\usepackage{user-persona}
+% Package options apply to every persona in the document
+\usepackage[label={Target User}, accent=PersonaRed]{user-persona}
+
+% \personasetup changes defaults from here on
+\personasetup{quoteborder=PersonaBlue}
 
 \begin{document}
+\pagestyle{empty}
 
-\begin{persona}{Tyler Durden}
-  % Placeholder for photo
-  \personaphoto{tyler-placeholder.jpg} 
-  
-  \personaquote{``If the university portal crashes while I am on hold 
-    with Centrelink and trying to sort out Mum's NDIS plan, my entire 
-    week's schedule completely collapses.''} % chktex 38
-  
-  \personafact{Age}{26}
-  \personafact{Gender}{Non-binary (They/Them)}
-  \personafact{Location}{Melbourne, Australia}
-  \personafact{Education}{Part-time B.Sc (Honours), High Distinction}
-  \personafact{Status}{NDIS Participant, Centrelink, Carer}
-  \personafact{Work}{PT Retail \& Advocacy Spokesperson}
-  \personafact{Neurotype}{Autistic / ADHD}
-  \personafact{Energy}{Exhausted (Low/Fluctuating)}
-  
-  \personasection{Goals \& Motivations}{PersonaGreen}{
-    \item Maintain a High Distinction academic average despite extremely limited energy slots.
-    \item Successfully advocate for neurodivergent and carer communities at the university level.
-    \item Manage complex caregiving duties for their mother without sacrificing their Honours research.
-    \item Secure a PhD scholarship in Disability Studies to influence policy from within the system.
-  }
-  
-  \personasection{Behaviours}{PersonaBlue}{
-    \item Relies on strict, militant ``time-blocking'' to juggle uni, work, and caregiving.
-    \item Prefers asynchronous, text-based communication over unpredictable live phone calls due to sensory load.
-    \item Completes heavyweight academic drafting in hospital waiting rooms or during brief quiet periods at night.
-    \item Uses ``body doubling'' apps and focus timers to stay on task during brain-fog episodes.
-    \item Audits every new software tool for keyboard accessibility and dark-mode support before adoption.
-  }
-  
-  \personasection[right]{Pain Points}{PersonaRed}{
-    \item Bureaucratic red tape: Navigating rigid university extension policies vs.\ unpredictable NDIS/carer crises.
-    \item Cognitive fatigue from constantly having to self-advocate for basic accessibility accommodations.
-    \item Severe burnout when group-mates fail to respect highly structured, pre-planned meeting times.
-    \item Financial anxiety due to the unreliable nature of government support payments and medical costs.
-  }
-  
-  \personacard[right]{Tools \& Tech}{PersonaDark}{
-    \personapill{Notion}
-    \personapill{Google Calendar}
-    \personapill{Slack}
-    \personapill{Zotero}
-    \personapill{LiquidText}
-    \personabrand[fa]{\faApple}
-    \personabrand[fa]{\faAccessibleIcon}
-    \personabrand[fa]{\faCoffee}
-    \personabrand[fa]{\faBrain}
-  }
+% Options given to the environment apply to this persona only
+\begin{persona}[headercolor=PersonaBlue!60!black]{Dr. Jon Howard}
 
-  % Context cards on the left
-  \personacontext{Frequency}{Scheduled Bursts (highly dependent on daily capacity)}
-  \personacontext{Motivation}{Academic survival and pushing systemic change}
-  \personacontext{Setting}{Home office, hospital waiting rooms, or commuting on public transport}
-  
-  \personacard[left]{Life Events}{PersonaGrey}{
-    \textbf{2022:} Diagnosed with burnout.\\
-    \textbf{2023:} Became full-time carer.\\
-    \textbf{2024:} Started Honours project.
-  }
+    % Intentionally pointing to a missing image to showcase the placeholder box
+    \personaphoto{jon-howard-profile.jpg}
 
-  \personasection[span]{Core Values \& Advocacy}{PersonaGreen}{
-    % not everyone uses aussie spelling, but this is a persona for an Australian student so it makes sense to use it here
-    \item \textbf{Intersectionality:} Ensuring advocacy includes the most marginalised voices in the community.
-    \item \textbf{Transparency:} Pushing for open, clear, and honest communication from institutional portals.
-    \item \textbf{Autonomy:} Designing systems that empower users to manage their own needs without friction.
-  }
+    \personaquote{``I just wanted to teach sociology, but now I'm navigating a chaotic university merger and dodging defamation writs from a tenured Law Professor filming TikTok/Instagram culture-war reels with a wireless lapel mic.''}
 
-  \personasection[span]{Accessibility Requirements}{PersonaGrey}{
-    \item High contrast text for reading in brightly lit hospital environments.
-    \item Logical heading structures for screen reader compatibility during high-fatigue periods.
-    \item Predictable interaction patterns to reduce cognitive load during multi-tasking.
-  }
-  
+    \personafact{Age}{27}
+    \personafact{Occupation}{Sociology Lecturer (Recent PhD)}
+    \personafact{Location}{Lawson Lakes, AU}
+    \personafact{Origin}{United Kingdom}
+    \personafact{Income}{Underpaid}
+
+    \personacard[left]{Traits \& Comfort}{PersonaBlue}{
+        % Scales and ratings take the card's colour unless one is given
+        \personascale{Introvert}{Extrovert}{0.35}
+        \personascale[PersonaRed]{Passive}{Litigious}{0.85}
+        \personascale{Tech Novice}{Tech Savvy}{0.75}
+
+        \vspace{2mm}
+        \textbf{Legal Literacy:}
+        \personarating{UK System}{3}{5}
+        \personarating{AUS System}{1}{5}
+        \personarating{Patience for HR}{0}{5}
+    }
+
+    \personacontext[right]{Background}{
+        Jon moved from the UK to complete his PhD at \textbf{Australasia University}. He became a sociology lecturer three months ago, timed perfectly with a chaotic campus mega-merger. He is currently caught between a historical wage-theft audit and a high-stakes standoff with a tenured Law Professor who spends hours lobbying state parliament, producing viral vertical-video culture war content, and serving defamation threats to members of the public who question her conduct.
+    }
+
+    \personasection{Core Legal Needs \& Goals}{PersonaGreen}{
+        \item \textbf{Employment \& Contract Law:} Needs to figure out successor liability. Who is legally responsible for his historical underpayment now that the old university technically no longer exists?
+        \item \textbf{Defamation \& Tort:} Called the influencer academic's viral legislative campaigns and campus petitions ``bad-faith algorithmic moral panic'' in an op-ed. Received an intimidating Section 12A Concerns Notice from her legal counsel.
+        \item \textbf{Cross-Jurisdictional Translation:} Needs to quickly grasp the differences between UK and AUS case laws, as his British assumptions keep getting him into trouble.
+        \item \textbf{Administrative Law:} Wants to understand basic administrative law procedures and case laws so he can file an airtight, formal grievance against the university without being dismissed on a technicality.
+    }
+
+    \personasection[right]{Pain Points \& Frustrations}{PersonaRed}{
+        \item Facing digital swarming and coordinated brigading from bot accounts across the country.
+        \item HR is using merger transitional chaos as an excuse to ignore both his wage claims and his harassment complaints.
+        \item Cannot afford a commercial defamation barrister on a junior Level~A academic salary.
+    }
+
+    \personacard[right]{Tech Ecosystem}{PersonaGrey}{
+        % Badges: [fa] for a FontAwesome icon, [img] for an image file, anything else for text
+        \personabrand[fa]{\faTwitter}
+        \personabrand[fa]{\faTiktok}
+        \personabrand[img]{example-image-a}
+        \personabrand[text]{Canvas}
+    }
+
+    \personacard[span]{App Feature Expectations (Software Engineering Notes)}{PersonaDark}{
+        To successfully onboard users like Jon, our legal aid app needs to abstract complex legal theories into actionable, bite-sized modules. The UI must intuitively explain basic concepts of legal elements without overwhelming the user with legalese.
+
+        \vspace{1mm}
+        \textbf{Required UI Modules for this Persona:}\par
+        \vspace{1mm}
+        \personapill{Merger \& Liability Checker}
+        \personapill{Concerns Notice \& Defamation Shield}
+        \personapill{Academic Freedom vs.\ Code of Conduct Guide}
+        \personapill{Admin Grievance Action Wizard}
+    }
+
+\end{persona}
+
+% A second persona overriding the layout and colours; the overrides
+% reset at \end{persona}, while package options and \personasetup stay.
+\begin{persona}[label={Secondary User}, uppercase=false, leftwidth=0.3, gap=0.03,
+    headercolor=PersonaGrey!20, headertextcolor=PersonaDark,
+    quotecolor=white, quoteborder=PersonaRed]{Dr. Skye Morrison}
+
+    \personaquote{``If it isn't on camera, did it even happen?''}
+
+    \personafact{Age}{29}
+    \personafact{Role}{Media Studies Lecturer}
+    \personafact{Following}{100k+}
+    % Outside a card, ratings use the `accent' colour
+    \personafact{Reach}{\personarating{}{5}{5}}
+
+    \personasection[left]{Goals}{PersonaGreen}{
+        \item Turn every staff dispute into content.
+        \item Keep a public image of the ``wronged'' academic.
+    }
+
+    \personasection{Pain Points}{PersonaRed}{
+        \item Legal letters arrive faster than the views do.
+        \item The merged university's new social media policy is still undecided.
+    }
+
+    \personacard{Platforms}{PersonaDark}{
+        \personabrand[fa]{\faTiktok}
+        \personabrand[fa]{\faInstagram}
+        \personabrand[fa]{\faYoutube}
+    }
+
+    \personasection[span]{Design Implications}{PersonaBlue}{
+        \item Defamation guidance must also be usable by the party making the threat, not just the one receiving it.
+    }
+
 \end{persona}
 
 \end{document}

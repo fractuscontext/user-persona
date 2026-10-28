@@ -13,7 +13,7 @@
 \RequirePackage{enumitem}
 \RequirePackage{tabularx}
 \RequirePackage{fontawesome5}
-\pdfmapfile{}
+\RequirePackage{pgfopts}
 
 \definecolor{PersonaDark}{HTML}{354254}       % Main header background
 \definecolor{PersonaQuoteBg}{HTML}{FFF8DF}     % Quote background (light yellow)
@@ -22,6 +22,38 @@
 \definecolor{PersonaBlue}{HTML}{5D86D6}        % Behaviours
 \definecolor{PersonaRed}{HTML}{E26556}         % Pain Points
 \definecolor{PersonaGrey}{HTML}{8E94A0}        % Context outline
+\definecolor{PersonaTrack}{HTML}{E3E5E9}       % Scale track / empty rating dot
+
+\colorlet{PersonaHeaderBg}{PersonaDark}
+\colorlet{PersonaHeaderText}{white}
+
+\makeatletter
+% chktex-file 1 (`\foo@bar ` spacing is intentional in package code)
+
+% --- Options ---
+% Usable as package options, via \personasetup{...}, or per persona
+% via \begin{persona}[...]{Name}.
+\newif\ifpersona@uppercase
+\pgfkeys{
+  /persona/.is family, /persona,
+  label/.store in=\persona@label,
+  uppercase/.is if=persona@uppercase,
+  leftwidth/.store in=\persona@leftwidth,
+  gap/.store in=\persona@gap,
+  headercolor/.code={\colorlet{PersonaHeaderBg}{#1}},
+  headertextcolor/.code={\colorlet{PersonaHeaderText}{#1}},
+  quotecolor/.code={\colorlet{PersonaQuoteBg}{#1}},
+  quoteborder/.code={\colorlet{PersonaQuoteBorder}{#1}},
+  accent/.store in=\persona@accent,
+  label=User Persona,
+  uppercase=true,
+  leftwidth=0.35,
+  gap=0.04,
+  accent=PersonaDark,
+}
+\ProcessPgfPackageOptions{/persona}
+
+\newcommand{\personasetup}[1]{\pgfkeys{/persona,#1}}
 
 % --- Box Styles ---
 \tcbset{
@@ -39,10 +71,9 @@
   }
 }
 
-\makeatletter
-
-\newenvironment{persona}[1]{%
-  \def\@personaname{#1}%
+\newenvironment{persona}[2][]{%
+  \pgfkeys{/persona,#1}%
+  \def\@personaname{#2}%
   \def\@personaphoto{}%
   \def\@personaquote{}%
   \def\@personafacts{}%
@@ -51,12 +82,18 @@
   \def\@personaspancards{}%
 }{%
   \noindent
-  \begin{tcolorbox}[colback=PersonaDark, coltext=white, sharp corners, boxrule=0pt, fontupper=\bfseries\large\sffamily, left=2mm, top=2.5mm, bottom=2.5mm, before skip=0pt, after skip=3mm]
-    USER PERSONA: \MakeUppercase{\@personaname} % chktex 13
+  \begin{tcolorbox}[colback=PersonaHeaderBg, coltext=PersonaHeaderText, sharp corners, boxrule=0pt, fontupper=\bfseries\large\sffamily, left=2mm, top=2.5mm, bottom=2.5mm, nobeforeafter]
+    \ifpersona@uppercase
+      \ifx\persona@label\@empty\else\MakeUppercase{\persona@label}: \fi\MakeUppercase{\@personaname} % chktex 13
+    \else
+      \ifx\persona@label\@empty\else\persona@label: \fi\@personaname % chktex 13
+    \fi
   \end{tcolorbox}
+  % Keep the header on the same page as the columns
+  \par\nopagebreak\vspace{3mm}
 
   \noindent
-  \begin{minipage}[t]{0.35\textwidth}
+  \begin{minipage}[t]{\persona@leftwidth\textwidth}
     \vspace{0pt}
     \ifx\@personaphoto\@empty\else
       \IfFileExists{\@personaphoto}{%
@@ -82,7 +119,7 @@
 
   \end{minipage}%
   \hfill
-  \begin{minipage}[t]{0.61\textwidth}
+  \begin{minipage}[t]{\dimexpr\textwidth-\persona@leftwidth\textwidth-\persona@gap\textwidth\relax}
     \vspace{0pt}
 
     \ifx\@personaquote\@empty\else
@@ -103,22 +140,43 @@
 \newcommand{\personaquote}[1]{\def\@personaquote{#1}}
 \newcommand{\personafact}[2]{\appto\@personafacts{\textbf{#1:} & #2 \\}}
 
+% \persona@box[tcb options]{Title}{Color}{Content}
+\newcommand{\persona@box}[4][]{%
+  \begin{tcolorbox}[personasectionbox, #1, colframe=#3, coltitle=#3, title={\MakeUppercase{#2}}]
+    \def\persona@accent{#3}%
+    \scriptsize\sffamily #4
+  \end{tcolorbox}%
+}
+
+% \persona@addcard{position}{{Title}{Color}{Content}}
+% Span cards sit outside the columns, so they may break across pages.
+\def\persona@pos@left{}
+\def\persona@pos@right{}
+\def\persona@pos@span{}
+\newcommand{\persona@addcard}[2]{%
+  \ifcsname persona@pos@#1\endcsname
+    \ifstrequal{#1}{span}{%
+      \appto\@personaspancards{\persona@box[breakable]#2}%
+    }{%
+      \csappto{@persona#1cards}{\persona@box#2}%
+    }%
+  \else
+    \PackageError{user-persona}{Unknown card position `#1'}{%
+      Use left, right or span. The card has been placed on the right.}%
+    \appto\@personarightcards{\persona@box#2}%
+  \fi
+}
+
 \newcommand{\personasection}[4][right]{%
-  \csappto{@persona#1cards}{%
-    \begin{tcolorbox}[personasectionbox, colframe=#3, coltitle=#3, title={\MakeUppercase{#2}}]
-      \begin{itemize}[leftmargin=3.5mm, nosep, itemsep=3pt, label={\tiny$\bullet$}]
-        \scriptsize\sffamily #4
-      \end{itemize}
-    \end{tcolorbox}%
-  }%
+  \persona@addcard{#1}{{#2}{#3}{%
+    \begin{itemize}[leftmargin=3.5mm, nosep, itemsep=3pt, label={\tiny$\bullet$}]
+      #4
+    \end{itemize}%
+  }}%
 }
 
 \newcommand{\personacard}[4][right]{%
-  \csappto{@persona#1cards}{%
-    \begin{tcolorbox}[personasectionbox, colframe=#3, coltitle=#3, title={\MakeUppercase{#2}}]
-      \scriptsize\sffamily #4
-    \end{tcolorbox}%
-  }%
+  \persona@addcard{#1}{{#2}{#3}{#4}}%
 }
 
 \newcommand{\personacontext}[3][left]{\personacard[#1]{#2}{PersonaGrey}{#3}}
@@ -139,6 +197,37 @@
       \sffamily\raisebox{-0.1\height}{#2}%
     }%
   }\enskip%
+}
+
+% --- Scales & Ratings ---
+% Colour defaults to the enclosing \personacard frame colour (else `accent').
+
+% \personascale[color]{Left label}{Right label}{value, 0 to 1}
+\newcommand{\personascale}[4][\persona@accent]{%
+  \par\noindent
+  {\sffamily\scriptsize #2\hfill #3}\par\nointerlineskip\vspace{1mm}%
+  \pgfmathsetlengthmacro\persona@scalex{1.2mm + (#4)*(\linewidth-2.4mm)}% chktex 36
+  \noindent\begin{tikzpicture}
+    \useasboundingbox (0,-1.2mm) rectangle (\linewidth,1.2mm);
+    \fill[PersonaTrack, rounded corners=0.4mm] (0,-0.4mm) rectangle (\linewidth,0.4mm);
+    \fill[fill=#1, rounded corners=0.4mm] (0,-0.4mm) rectangle (\persona@scalex,0.4mm);
+    \filldraw[fill=white, draw=#1, line width=0.8pt] (\persona@scalex,0) circle (1.1mm);
+  \end{tikzpicture}% chktex 31
+  \par\vspace{1.5mm}%
+}
+
+% \personarating[color]{Label}{value}{max}
+\newcommand{\personarating}[4][\persona@accent]{%
+  \par\noindent
+  {\sffamily\scriptsize #2}\hfill
+  {\tiny\foreach \persona@i in {1,...,#4}{% chktex 11
+    \ifnum\persona@i>#3\relax
+      \textcolor{PersonaTrack}{\faCircle}%
+    \else
+      \textcolor{#1}{\faCircle}%
+    \fi
+    \ifnum\persona@i<#4\relax\,\fi
+  }}\par\vspace{1mm}%
 }
 
 \makeatother

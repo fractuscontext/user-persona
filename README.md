@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: 2026 Claire Tam <claire.t@student.adelaide.edu.au>
+SPDX-FileCopyrightText: 2026 Claire Tam <claire.tam@student.adelaide.edu.au>
 SPDX-FileCopyrightText: 2026 fractuscontext <106440141+fractuscontext@users.noreply.github.com>
 
 SPDX-License-Identifier: LPPL-1.3c
@@ -7,7 +7,7 @@ SPDX-License-Identifier: LPPL-1.3c
 
 # user-persona: LaTeX Package for UX & HCI
 
-![Screenshot](./user-persona-example-screenshot.jpeg)
+![Screenshot](./user-persona-example-screenshot.png)
 
 LaTeX Package for creating user personas.
 
@@ -57,6 +57,6 @@ Please see the full documentation at `./user-persona.tex`.
 This repository is licened under LPPL-1.3c; and proudly uses [Nix](https://nixos.org/) for a fully reproducible
 environment.
 
-- **Enter shell:** `nix develop` (provides `tectonic`, `chktex`, `ctanify`, `reuse`)
+- **Enter shell:** `nix develop` (provides `lualatex`, `latexmk`, `chktex`, `ctanify`, `reuse`)
 - **Build CTAN bundle:** `build-ctan`
 - **Lint SPDX headers:** `reuse lint`

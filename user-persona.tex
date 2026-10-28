@@ -94,13 +94,14 @@ This produces a two-column persona sheet with a portrait, quote, identity table,
 The main structural element:
 
 \begin{lstlisting}
-\begin{persona}{Name}
+\begin{persona}[options]{Name}
   % commands go here
 \end{persona}
 \end{lstlisting}
 
 \textbf{Arguments:}
 \begin{itemize}
+\item \texttt{options} (optional): Any of the keys from Section~\ref{sec:options}, applied to this persona only
 \item \texttt{Name}: The persona's name (appears in the header)
 \end{itemize}
 
@@ -227,6 +228,74 @@ Renders an icon badge. Two modes:
 \personabrand[fa]{\faLinux}
 \end{lstlisting}
 
+\subsection{Scales and Ratings}
+
+Both commands are meant to be placed inside a \texttt{\textbackslash personacard}. They take the card's frame color by default.
+
+\subsubsection{\texttt{\textbackslash personascale}}
+
+\begin{lstlisting}
+\personascale[color]{Left label}{Right label}{value}
+\end{lstlisting}
+
+Draws a spectrum slider between two opposing traits. \texttt{value} is a number from \texttt{0} (fully left) to \texttt{1} (fully right).
+
+\subsubsection{\texttt{\textbackslash personarating}}
+
+\begin{lstlisting}
+\personarating[color]{Label}{value}{max}
+\end{lstlisting}
+
+Draws \texttt{max} dots, of which the first \texttt{value} are filled. Both must be whole numbers.
+
+\textbf{Example:}
+\begin{lstlisting}
+\personacard[left]{Personality}{PersonaBlue}{
+  \personascale{Introvert}{Extrovert}{0.2}
+  \personascale{Spontaneous}{Planner}{0.9}
+}
+
+\personacard[left]{Proficiency}{PersonaGreen}{
+  \personarating{Tech literacy}{4}{5}
+  \personarating[PersonaRed]{Spare energy}{1}{5}
+}
+\end{lstlisting}
+
+\section{Options}\label{sec:options}
+
+Options can be set in three places, from broadest to narrowest:
+
+\begin{lstlisting}
+% 1. As package options
+\usepackage[label={Proto-Persona}, leftwidth=0.4]{user-persona}
+
+% 2. For the rest of the document
+\personasetup{headercolor=PersonaBlue, uppercase=false}
+
+% 3. For a single persona
+\begin{persona}[label=, quotecolor=white]{Zhang Wei}
+\end{lstlisting}
+
+\begin{center}
+\begin{tabularx}{\textwidth}{ll>{\raggedright\arraybackslash}X}
+\toprule
+\textbf{Key} & \textbf{Default} & \textbf{Effect} \\
+\midrule
+\texttt{label} & \texttt{User Persona} & Header prefix; empty removes it and the colon \\
+\texttt{uppercase} & \texttt{true} & Uppercase the header text \\
+\texttt{leftwidth} & \texttt{0.35} & Left column width, as a fraction of \texttt{\textbackslash textwidth} \\
+\texttt{gap} & \texttt{0.04} & Space between columns, same unit; the right column takes the rest \\
+\texttt{headercolor} & \texttt{PersonaDark} & Header background \\
+\texttt{headertextcolor} & \texttt{white} & Header text \\
+\texttt{quotecolor} & \texttt{PersonaQuoteBg} & Quote background \\
+\texttt{quoteborder} & \texttt{PersonaQuoteBorder} & Quote border \\
+\texttt{accent} & \texttt{PersonaDark} & Scale/rating color outside a card \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+The \texttt{label} key is also how you translate the header, e.g.\ \texttt{label=Nutzerpersona}.
+
 \section{Color Scheme}
 
 The package defines five semantic colors:
@@ -257,8 +326,8 @@ You can define custom colors using \texttt{xcolor}:
 The \texttt{persona} environment produces a two-column layout:
 
 \begin{itemize}
-\item \textbf{Left column (35\% width):} Portrait photo, identity table, and cards with \texttt{[left]} position
-\item \textbf{Right column (61\% width):} Pull-quote and cards with \texttt{[right]} position (default)
+\item \textbf{Left column (35\% width by default, see \texttt{leftwidth}):} Portrait photo, identity table, and cards with \texttt{[left]} position
+\item \textbf{Right column (61\% width by default):} Pull-quote and cards with \texttt{[right]} position (default)
 \item \textbf{Span cards:} Full-width cards below both columns using \texttt{[span]} position
 \end{itemize}
 
@@ -268,6 +337,10 @@ The \texttt{persona} environment produces a two-column layout:
 \item Use \texttt{[right]} for primary behavioral/motivational content
 \item Use \texttt{[span]} for accessibility requirements or extended narratives
 \end{itemize}
+
+\subsection{Page Breaks}
+
+The header and the two columns are typeset as one unbreakable block, so they always stay together on a single page. Span cards come after that block and \emph{can} break across pages, so put long content in \texttt{[span]} cards. If the columns alone are taller than a page, \LaTeX{} moves them to a new page and they overflow at the bottom; shorten the columns, or move cards into \texttt{[span]}.
 
 \section{Complete Example}
 
@@ -290,6 +363,10 @@ tlmgr install fontawesome5
 \subsection{Color Not Defined}
 
 If you reference a color that doesn't exist, \LaTeX{} will throw an error. Either use one of the predefined colors (\texttt{PersonaDark}, \texttt{PersonaGreen}, etc.) or define your own with \texttt{\textbackslash definecolor}.
+
+\subsection{Unknown Card Position}
+
+The optional position argument of \texttt{\textbackslash personasection}, \texttt{\textbackslash personacard} and \texttt{\textbackslash personacontext} must be \texttt{left}, \texttt{right} or \texttt{span}. Anything else (e.g.\ \texttt{[middle]}) raises \texttt{Unknown card position}; if you continue past the error, the card is placed on the right.
 
 
 
